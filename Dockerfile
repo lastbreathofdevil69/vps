@@ -49,8 +49,9 @@ RUN if id -u ubuntu >/dev/null 2>&1; then userdel -r ubuntu; fi && \
     usermod -aG sudo viru && \
     echo "viru ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-# Configure noVNC index.html redirect to full-screen desktop with optimized quality
-RUN echo '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Ubuntu 24.04 Desktop - viru</title><script>window.location.href="vnc.html?autoconnect=true&resize=scale&quality=5&compression=6";</script></head><body style="background:#202225;color:#fff;font-family:sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;"><h3>Starting Ubuntu 24.04 Desktop (viru)...</h3></body></html>' > /usr/share/novnc/index.html
+# Configure noVNC index.html redirect with cache-busting to prevent stale script errors
+RUN echo '<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><title>Ubuntu 24.04 Desktop - viru</title><script>window.location.href="vnc.html?autoconnect=true&resize=scale&quality=5&compression=6&v=24";</script></head><body style="background:#202225;color:#fff;font-family:sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;"><h3>Starting Ubuntu 24.04 Desktop (viru)...</h3></body></html>' > /usr/share/novnc/index.html && \
+    sed -i 's|src="app/ui.js"|src="app/ui.js?v=24"|g' /usr/share/novnc/vnc.html 2>/dev/null || true
 
 WORKDIR /home/viru
 
