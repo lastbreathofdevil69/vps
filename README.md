@@ -1,82 +1,63 @@
-# Free Ubuntu VPS on Render (GoTTY)
+# Free Ubuntu Desktop on Render (noVNC + XFCE)
 
-Run a free, browser-accessible Ubuntu 22.04 terminal environment on [Render](https://render.com) using GoTTY.
+Run a free, browser-accessible **Ubuntu 22.04 Desktop GUI** on [Render](https://render.com) using XFCE, Xvfb, and noVNC.
 
 ---
 
-## 🚀 How to Deploy on Render (Step-by-Step)
+## 🖥️ System Details
+
+- **Desktop Environment:** XFCE4 (Lightweight, fits within Render's 512 MB RAM limit)
+- **Default User:** `viru` (with full `sudo` privileges)
+- **User Password:** `viru`
+- **VNC Desktop Password:** `viru123` (changeable via the `VNC_PASSWORD` environment variable)
+- **Resolution:** `1280x720` (720p HD, auto-scaling)
+
+---
+
+## 🚀 How to Deploy on Render
 
 ### Step 1: Push Changes to GitHub
-Make sure your changes in this repository are pushed to your GitHub account:
 ```bash
 git add .
-git commit -m "Fix Render deployment and port binding"
+git commit -m "Convert to Ubuntu Desktop GUI with user viru"
 git push origin main
 ```
 
 ---
 
-### Step 2: Create a Web Service on Render
+### Step 2: Deploy on Render
 
-1. Log in to your [Render Dashboard](https://dashboard.render.com/).
-2. Click **New +** in the top right and select **Web Service**.
-3. Connect your GitHub account and select your **`Render-Vps`** repository.
-4. Configure the service settings:
-   - **Name:** `ubuntu-vps` (or any name you prefer)
-   - **Region:** Choose the region closest to you (e.g., Oregon, Frankfurt, Singapore)
-   - **Runtime:** **Docker** (Render auto-detects the `Dockerfile`)
-   - **Instance Type:** Select **Free** ($0/month)
-5. *(Recommended)* Under **Advanced -> Environment Variables**, add:
-   - **Key:** `GOTTY_CREDENTIAL`
-   - **Value:** `youruser:yourpassword` (e.g. `admin:MySecretPass123`)  
-   *(This ensures nobody else on the internet can access your terminal).*
+1. Open your **[Render Dashboard](https://dashboard.render.com/)**.
+2. Click **New +** > **Web Service**.
+3. Connect your GitHub repository (`vps`).
+4. Select the settings:
+   - **Runtime:** `Docker`
+   - **Instance Type:** `Free`
+5. *(Optional)* Under **Environment Variables**, you can set:
+   - `VNC_PASSWORD`: Your custom desktop password (default: `viru123`)
+   - `RESOLUTION`: e.g. `1280x720` or `1024x768`
 6. Click **Create Web Service**.
 
 ---
 
-### Step 3: Access Your Ubuntu VPS
+### Step 3: Access Your Desktop
 
-Once the deployment finishes and shows **Live**:
-1. Click the URL provided by Render (e.g. `https://ubuntu-vps-xxxx.onrender.com`).
-2. If you configured `GOTTY_CREDENTIAL`, enter your username and password when prompted.
-3. You now have a full Ubuntu 22.04 bash shell directly in your web browser!
-
----
-
-## ⚙️ Pre-installed Tools
-
-- `curl`, `wget`, `git`, `nano`, `vim`
-- `sudo`, `htop`, `tmux`, `unzip`
-- `net-tools`, `iputils-ping`
+1. Once deployment shows **Live**, click your Render URL (e.g. `https://ubuntu-desktop-xxxx.onrender.com`).
+2. When prompted, enter your password: **`viru123`**.
+3. The full Ubuntu XFCE Desktop will stream directly inside your web browser!
 
 ---
 
-## 📋 How to Copy and Paste in the Terminal
+## 📋 Copy & Paste in noVNC
 
-### In Your Web Browser:
-1. **Copy:**
-   - **Method 1:** Simply highlight any text with your mouse (it automatically copies to your clipboard).
-   - **Method 2:** Highlight text and press `Ctrl + Shift + C` (or Right-Click > Copy).
-2. **Paste:**
-   - **Method 1:** Press `Ctrl + V` or `Ctrl + Shift + V`.
-   - **Method 2:** Right-click anywhere in the terminal and choose Paste, or press `Shift + Insert`.
-
-### Transferring Files / Text via Command Line:
-- **Share/Copy output to your PC:**
-  ```bash
-  cat filename.txt | nc termbin.com 9999
-  ```
-  *(Outputs a 4-letter URL you can open in your browser to copy any command output).*
-- **Paste text into a new file:**
-  ```bash
-  cat << 'EOF' > my_script.sh
-  # paste your text here
-  EOF
-  ```
+- Click the small chevron arrow tab (`>`) on the far-left edge of your browser screen.
+- Open the **Clipboard** tool:
+  - Paste any text from your Windows PC into this box, and it immediately becomes available inside the Ubuntu Desktop to paste with `Ctrl+V` or Right-Click!
+  - Text copied from inside the desktop will also appear in this box to copy back to your Windows PC.
 
 ---
 
-## 📌 Important Notes for Render Free Tier
+## ⚠️ Important Free Tier Notes
 
-1. **Inactivity Sleep:** Render's free tier services spin down after 15 minutes of inactivity. When you visit the URL again, it takes ~30–50 seconds to wake up (cold start).
-2. **Ephemeral Storage:** Containers on the free tier reset their disk storage when spun down or restarted. Do not store permanent critical data on the container root filesystem.
+1. **512 MB RAM Limit:** XFCE, noVNC, and system tools run at ~160 MB RAM. Avoid opening full web browsers (like Google Chrome or Firefox) inside this container, as they will exceed the 512 MB RAM limit and crash. Use lightweight tools, terminal, python, text editors, etc.
+2. **Inactivity Sleep:** Render free tier services go to sleep after 15 minutes of inactivity. When you visit the link again, it takes ~30–50 seconds to wake up.

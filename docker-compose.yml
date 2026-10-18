@@ -1,11 +1,13 @@
 services:
-  my-gotty:
-    hostname: mygotty
+  ubuntu-desktop:
+    hostname: ubuntu-desktop
     ports:
-      - "8989:8080"
-    image: lapio-plays:latest
+      - "6080:10000"
     build:
       context: .
       dockerfile: Dockerfile
-    tty: true
-    stdin_open: true
+    environment:
+      - PORT=10000
+      - VNC_PASSWORD=viru123
+      - RESOLUTION=1280x720
+    shm_size: "256m"

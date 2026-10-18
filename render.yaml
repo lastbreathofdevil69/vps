@@ -1,9 +1,13 @@
 services:
   - type: web
-    name: ubuntu-vps
+    name: ubuntu-desktop
     runtime: docker
     plan: free
     region: oregon
     envVars:
       - key: PORT
         value: 10000
+      - key: VNC_PASSWORD
+        value: viru123
+      - key: RESOLUTION
+        value: 1280x720
