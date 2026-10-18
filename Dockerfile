@@ -1,61 +1,49 @@
-FROM ubuntu:24.04
+FROM alpine:latest
 
-ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG=en_US.UTF-8
-ENV LANGUAGE=en_US:en
 ENV LC_ALL=C.UTF-8
 ENV HOME=/home/viru
 
-# Install minimal XFCE4 desktop, TigerVNC, Falkon web browser, and utilities
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        ca-certificates \
+# Install lightweight XFCE4, Papirus icons, TigerVNC, websockify, Falkon browser, and essential tools
+RUN apk update && \
+    apk add --no-cache \
+        bash \
+        sudo \
+        shadow \
         curl \
         wget \
         git \
         nano \
         vim \
-        sudo \
         htop \
-        net-tools \
-        iputils-ping \
-        unzip \
+        tar \
+        ca-certificates \
+        font-dejavu \
+        font-noto \
+        papirus-icon-theme \
         dbus-x11 \
-        x11-xserver-utils \
-        tigervnc-standalone-server \
-        tigervnc-common \
-        tigervnc-tools \
-        websockify \
-        python3-numpy \
-        fonts-dejavu-core \
-        fonts-freefont-ttf \
         xfce4 \
         xfce4-terminal \
-        xfwm4 \
-        xfce4-session \
-        xfce4-panel \
         thunar \
         mousepad \
-        desktop-base \
-        falkon \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+        tigervnc \
+        websockify \
+        py3-numpy \
+        falkon
 
-# Install official clean noVNC v1.5.0 to guarantee perfectly matched frontend files
+# Install official clean noVNC v1.5.0
 RUN rm -rf /usr/share/novnc && \
     mkdir -p /usr/share/novnc && \
     curl -sLk "https://github.com/novnc/noVNC/archive/refs/tags/v1.5.0.tar.gz" \
     | tar xzC /usr/share/novnc --strip-components=1
 
-# Safely remove default 'ubuntu' user if present in 24.04, then create user 'viru' (password: viru)
-RUN if id -u ubuntu >/dev/null 2>&1; then userdel -r ubuntu; fi && \
-    useradd -m -s /bin/bash -u 1000 viru && \
+# Create non-root user 'viru' with passwordless sudo (password: viru)
+RUN adduser -D -s /bin/bash -u 1000 viru && \
     echo "viru:viru" | chpasswd && \
-    usermod -aG sudo viru && \
     echo "viru ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 # Configure noVNC index.html redirect to full-screen desktop with auto-connect
-RUN echo '<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><title>Ubuntu 24.04 Desktop - viru</title><script>window.location.href="vnc.html?autoconnect=true&resize=scale&quality=5&compression=6";</script></head><body style="background:#202225;color:#fff;font-family:sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;"><h3>Starting Ubuntu 24.04 Desktop (viru)...</h3></body></html>' > /usr/share/novnc/index.html
+RUN echo '<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><title>Alpine Linux Clean Desktop - viru</title><script>window.location.href="vnc.html?autoconnect=true&resize=scale&quality=5&compression=6";</script></head><body style="background:#202225;color:#fff;font-family:sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;"><h3>Starting Clean Alpine Desktop (viru)...</h3></body></html>' > /usr/share/novnc/index.html
 
 WORKDIR /home/viru
 
