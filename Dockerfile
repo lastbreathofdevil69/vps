@@ -49,8 +49,8 @@ RUN useradd -m -s /bin/bash -u 1000 viru && \
     usermod -aG sudo viru && \
     echo "viru ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-# Configure noVNC index.html redirect to full-screen desktop
-RUN echo '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Ubuntu Desktop - viru</title><script>window.location.href="vnc.html?autoconnect=true&resize=scale";</script></head><body style="background:#202225;color:#fff;font-family:sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;"><h3>Connecting to Ubuntu Desktop (viru)...</h3></body></html>' > /usr/share/novnc/index.html
+# Configure noVNC index.html redirect to full-screen desktop with optimized quality
+RUN echo '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Ubuntu Desktop - viru</title><script>window.location.href="vnc.html?autoconnect=true&resize=scale&quality=4&compression=7";</script></head><body style="background:#202225;color:#fff;font-family:sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;"><h3>Connecting to Ubuntu Desktop (viru)...</h3></body></html>' > /usr/share/novnc/index.html
 
 WORKDIR /home/viru
 
