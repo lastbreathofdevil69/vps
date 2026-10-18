@@ -1,0 +1,17 @@
+// GoTTY Terminal Configuration
+// Enable seamless Copy and Paste in the browser
+
+preferences {
+    // Automatically copy any text selected with mouse
+    copy_on_select = true
+
+    // Enable standard Ctrl+V to paste into the terminal
+    ctrl_v_paste = true
+
+    // Prevent annoying clipboard popups
+    enable_clipboard_notice = false
+
+    // Terminal Font Styling
+    font_size = 14
+    font_family = "DejaVu Sans Mono, monospace"
+}

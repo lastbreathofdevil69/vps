@@ -30,6 +30,7 @@ RUN apt-get update && \
 
 WORKDIR /root
 
+COPY .gotty /root/.gotty
 COPY entrypoint.sh /entrypoint.sh
 COPY deup-gaming.sh /deup-gaming.sh
 RUN chmod +x /entrypoint.sh /deup-gaming.sh

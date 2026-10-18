@@ -5,7 +5,7 @@ set -e
 export GOTTY_PORT="${PORT:-8080}"
 export TERM="${TERM:-xterm-256color}"
 
-ARGS=(--port "$GOTTY_PORT" --permit-write --reconnect)
+ARGS=(--port "$GOTTY_PORT" --permit-write --reconnect --config /root/.gotty)
 
 # Optional password protection: set GOTTY_CREDENTIAL="username:password" in Render environment variables
 if [ -n "$GOTTY_CREDENTIAL" ]; then

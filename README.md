@@ -51,6 +51,31 @@ Once the deployment finishes and shows **Live**:
 
 ---
 
+## 📋 How to Copy and Paste in the Terminal
+
+### In Your Web Browser:
+1. **Copy:**
+   - **Method 1:** Simply highlight any text with your mouse (it automatically copies to your clipboard).
+   - **Method 2:** Highlight text and press `Ctrl + Shift + C` (or Right-Click > Copy).
+2. **Paste:**
+   - **Method 1:** Press `Ctrl + V` or `Ctrl + Shift + V`.
+   - **Method 2:** Right-click anywhere in the terminal and choose Paste, or press `Shift + Insert`.
+
+### Transferring Files / Text via Command Line:
+- **Share/Copy output to your PC:**
+  ```bash
+  cat filename.txt | nc termbin.com 9999
+  ```
+  *(Outputs a 4-letter URL you can open in your browser to copy any command output).*
+- **Paste text into a new file:**
+  ```bash
+  cat << 'EOF' > my_script.sh
+  # paste your text here
+  EOF
+  ```
+
+---
+
 ## 📌 Important Notes for Render Free Tier
 
 1. **Inactivity Sleep:** Render's free tier services spin down after 15 minutes of inactivity. When you visit the URL again, it takes ~30–50 seconds to wake up (cold start).
