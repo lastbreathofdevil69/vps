@@ -1,16 +1,18 @@
-# Free Ubuntu Desktop on Render (noVNC + XFCE)
+# Ubuntu 24.04 LTS Desktop with Web Browser on Render (noVNC + XFCE)
 
-Run a free, browser-accessible **Ubuntu 22.04 Desktop GUI** on [Render](https://render.com) using XFCE, Xvfb, and noVNC.
+Run a clean, browser-accessible **Ubuntu 24.04 LTS Desktop GUI** on [Render](https://render.com) with the **Falkon Web Browser** pre-installed.
 
 ---
 
-## 🖥️ System Details
+## 🖥️ System & Account Details
 
-- **Desktop Environment:** XFCE4 (Lightweight, fits within Render's 512 MB RAM limit)
-- **Default User:** `viru` (with full `sudo` privileges)
+- **OS:** **Ubuntu 24.04 LTS (Noble Numbat)**
+- **Desktop Environment:** XFCE4 (Compositing disabled for maximum performance on 0.1 CPU)
+- **Web Browser:** **Falkon** (Lightweight Chromium/QtWebEngine browser, runs smoothly within 512 MB RAM)
+- **Logged-in User:** `viru` (with full `sudo` privileges)
 - **User Password:** `viru`
-- **VNC Desktop Password:** `viru123` (changeable via the `VNC_PASSWORD` environment variable)
-- **Resolution:** `1280x720` (720p HD, auto-scaling)
+- **VNC Password:** `4215` (or whatever you set via the `VNC_PASSWORD` environment variable)
+- **Color Depth:** 16-bit Fast Mode (drastically reduces bandwidth and lag)
 
 ---
 
@@ -18,46 +20,25 @@ Run a free, browser-accessible **Ubuntu 22.04 Desktop GUI** on [Render](https://
 
 ### Step 1: Push Changes to GitHub
 ```bash
-git add .
-git commit -m "Convert to Ubuntu Desktop GUI with user viru"
 git push origin main
 ```
 
 ---
 
-### Step 2: Deploy on Render
+### Step 2: Access Your Desktop
 
-1. Open your **[Render Dashboard](https://dashboard.render.com/)**.
-2. Click **New +** > **Web Service**.
-3. Connect your GitHub repository (`vps`).
-4. Select the settings:
-   - **Runtime:** `Docker`
-   - **Instance Type:** `Free`
-5. *(Optional)* Under **Environment Variables**, you can set:
-   - `VNC_PASSWORD`: Your custom desktop password (default: `viru123`)
-   - `RESOLUTION`: e.g. `1280x720` or `1024x768`
-6. Click **Create Web Service**.
+1. Once deployment shows **Live**, open your Render URL:
+   👉 `https://vps-lza0.onrender.com`
+2. Enter your password: **`4215`**.
+3. You will see your fresh **Ubuntu 24.04 Desktop**:
+   - Double-click the **Falkon Browser** icon on the desktop to browse the web!
+   - Double-click the **Terminal** icon on the desktop to run shell commands as user `viru`.
 
 ---
 
-### Step 3: Access Your Desktop
+## 🖱️ Browser Lag Tip: Turn ON "Local Cursor"
 
-1. Once deployment shows **Live**, click your Render URL (e.g. `https://ubuntu-desktop-xxxx.onrender.com`).
-2. When prompted, enter your password: **`viru123`**.
-3. The full Ubuntu XFCE Desktop will stream directly inside your web browser!
-
----
-
-## 📋 Copy & Paste in noVNC
-
-- Click the small chevron arrow tab (`>`) on the far-left edge of your browser screen.
-- Open the **Clipboard** tool:
-  - Paste any text from your Windows PC into this box, and it immediately becomes available inside the Ubuntu Desktop to paste with `Ctrl+V` or Right-Click!
-  - Text copied from inside the desktop will also appear in this box to copy back to your Windows PC.
-
----
-
-## ⚠️ Important Free Tier Notes
-
-1. **512 MB RAM Limit:** XFCE, noVNC, and system tools run at ~160 MB RAM. Avoid opening full web browsers (like Google Chrome or Firefox) inside this container, as they will exceed the 512 MB RAM limit and crash. Use lightweight tools, terminal, python, text editors, etc.
-2. **Inactivity Sleep:** Render free tier services go to sleep after 15 minutes of inactivity. When you visit the link again, it takes ~30–50 seconds to wake up.
+To make your mouse pointer completely lag-free (0ms):
+1. In the browser, click the small tab arrow (**`>`**) on the far-left edge of the screen.
+2. Click the **Gear icon (Settings)**.
+3. Turn **Local Cursor** to **ON**.

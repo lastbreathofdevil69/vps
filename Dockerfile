@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG=en_US.UTF-8
@@ -6,7 +6,7 @@ ENV LANGUAGE=en_US:en
 ENV LC_ALL=C.UTF-8
 ENV HOME=/home/viru
 
-# Install minimal XFCE4 desktop, TigerVNC (Xvnc), noVNC, and python3-pip
+# Install minimal XFCE4 desktop, TigerVNC, noVNC, Falkon web browser, and utilities
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         ca-certificates \
@@ -26,8 +26,7 @@ RUN apt-get update && \
         tigervnc-common \
         tigervnc-tools \
         novnc \
-        python3-pip \
-        python3-setuptools \
+        websockify \
         python3-numpy \
         fonts-dejavu-core \
         fonts-freefont-ttf \
@@ -39,18 +38,19 @@ RUN apt-get update && \
         thunar \
         mousepad \
         desktop-base \
-    && pip3 install --no-cache-dir --upgrade websockify \
+        falkon \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Create user viru with sudo privileges (password: viru)
-RUN useradd -m -s /bin/bash -u 1000 viru && \
+# Safely remove default 'ubuntu' user if present in 24.04, then create user 'viru' (password: viru)
+RUN if id -u ubuntu >/dev/null 2>&1; then userdel -r ubuntu; fi && \
+    useradd -m -s /bin/bash -u 1000 viru && \
     echo "viru:viru" | chpasswd && \
     usermod -aG sudo viru && \
     echo "viru ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 # Configure noVNC index.html redirect to full-screen desktop with optimized quality
-RUN echo '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Ubuntu Desktop - viru</title><script>window.location.href="vnc.html?autoconnect=true&resize=scale&quality=4&compression=7";</script></head><body style="background:#202225;color:#fff;font-family:sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;"><h3>Connecting to Ubuntu Desktop (viru)...</h3></body></html>' > /usr/share/novnc/index.html
+RUN echo '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Ubuntu 24.04 Desktop - viru</title><script>window.location.href="vnc.html?autoconnect=true&resize=scale&quality=5&compression=6";</script></head><body style="background:#202225;color:#fff;font-family:sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;"><h3>Starting Ubuntu 24.04 Desktop (viru)...</h3></body></html>' > /usr/share/novnc/index.html
 
 WORKDIR /home/viru
 

@@ -7,9 +7,10 @@ RESOLUTION="${RESOLUTION:-1280x720}"
 SOCK_PATH="/tmp/vnc.sock"
 
 echo "========================================================"
-echo " Starting Optimized Ubuntu Desktop (XFCE) on port $PORT"
+echo " Starting Ubuntu 24.04 Desktop (XFCE) on port $PORT"
 echo " User: viru"
 echo " Resolution: $RESOLUTION (16-bit Fast Mode)"
+echo " Browser: Falkon (Chromium-based)"
 echo "========================================================"
 
 # Clean up stale locks or sockets
@@ -29,6 +30,16 @@ cat << 'EOF' > /home/viru/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml
   </property>
 </channel>
 EOF
+
+# Setup desktop icons for Falkon Browser and Terminal
+mkdir -p /home/viru/Desktop
+if [ -f /usr/share/applications/org.kde.falkon.desktop ]; then
+    cp /usr/share/applications/org.kde.falkon.desktop /home/viru/Desktop/
+fi
+if [ -f /usr/share/applications/xfce4-terminal.desktop ]; then
+    cp /usr/share/applications/xfce4-terminal.desktop /home/viru/Desktop/
+fi
+chmod +x /home/viru/Desktop/*.desktop 2>/dev/null || true
 
 mkdir -p /home/viru/.vnc
 chown -R viru:viru /home/viru
@@ -58,5 +69,5 @@ su - viru -c "DISPLAY=:1 dbus-launch --exit-with-session startxfce4" &
 sleep 2
 
 # Start websockify bridging Render's $PORT directly to Unix socket
-echo "Serving Optimized Ubuntu Desktop on http://0.0.0.0:$PORT via $SOCK_PATH..."
+echo "Serving Ubuntu 24.04 Desktop on http://0.0.0.0:$PORT via $SOCK_PATH..."
 exec websockify --web /usr/share/novnc "$PORT" --unix-target="$SOCK_PATH"
