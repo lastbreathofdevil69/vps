@@ -6,7 +6,7 @@ ENV LANGUAGE=en_US:en
 ENV LC_ALL=C.UTF-8
 ENV HOME=/home/viru
 
-# Install minimal XFCE4 desktop, TigerVNC, noVNC, Falkon web browser, and utilities
+# Install minimal XFCE4 desktop, TigerVNC, Falkon web browser, and utilities
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         ca-certificates \
@@ -25,7 +25,6 @@ RUN apt-get update && \
         tigervnc-standalone-server \
         tigervnc-common \
         tigervnc-tools \
-        novnc \
         websockify \
         python3-numpy \
         fonts-dejavu-core \
@@ -42,6 +41,12 @@ RUN apt-get update && \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Install official clean noVNC v1.5.0 to guarantee perfectly matched frontend files
+RUN rm -rf /usr/share/novnc && \
+    mkdir -p /usr/share/novnc && \
+    curl -sLk "https://github.com/novnc/noVNC/archive/refs/tags/v1.5.0.tar.gz" \
+    | tar xzC /usr/share/novnc --strip-components=1
+
 # Safely remove default 'ubuntu' user if present in 24.04, then create user 'viru' (password: viru)
 RUN if id -u ubuntu >/dev/null 2>&1; then userdel -r ubuntu; fi && \
     useradd -m -s /bin/bash -u 1000 viru && \
@@ -49,9 +54,8 @@ RUN if id -u ubuntu >/dev/null 2>&1; then userdel -r ubuntu; fi && \
     usermod -aG sudo viru && \
     echo "viru ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-# Configure noVNC index.html redirect with cache-busting to prevent stale script errors
-RUN echo '<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><title>Ubuntu 24.04 Desktop - viru</title><script>window.location.href="vnc.html?autoconnect=true&resize=scale&quality=5&compression=6&v=24";</script></head><body style="background:#202225;color:#fff;font-family:sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;"><h3>Starting Ubuntu 24.04 Desktop (viru)...</h3></body></html>' > /usr/share/novnc/index.html && \
-    sed -i 's|src="app/ui.js"|src="app/ui.js?v=24"|g' /usr/share/novnc/vnc.html 2>/dev/null || true
+# Configure noVNC index.html redirect to full-screen desktop with auto-connect
+RUN echo '<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><title>Ubuntu 24.04 Desktop - viru</title><script>window.location.href="vnc.html?autoconnect=true&resize=scale&quality=5&compression=6";</script></head><body style="background:#202225;color:#fff;font-family:sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;"><h3>Starting Ubuntu 24.04 Desktop (viru)...</h3></body></html>' > /usr/share/novnc/index.html
 
 WORKDIR /home/viru
 
